@@ -1,0 +1,63 @@
+I implement DNSSEC as follows:
+
+First, verify the validity of root zone ".": send a special request to root zone:
+   request = dns.message.make_query('.', dns.rdatatype.DNSKEY, want_dnssec=True, payload=2048)
+   response = dns.query.tcp(request, rootserver, timeout=3), the response will contain the root zone's DNSKEY and the signature of this DNSKEY in answer section. Then we use local stored public KSK to check the DNSKEY element. Then we verify DNSKEY by decrypting the signature using public key-signing-key. 
+
+After that we send normal query request (with DNSSEC flag) to root server and verify the DS record in the response ( normal query request is to get actual answer we want from. 
+
+Then we fetch the DS record and the signature of this DS record from response's authority section, use the public zone-signing-key to decrypt the signature and compare it with the DS.
+
+Above is the step of verifying root zone's integrity, basically in each of the iterations of resolving we do the similar things except that the following steps have different zone verifying process: for verifying zones other than the root zone, we compare the hash of its public key-signing-key with the DS record that comes from its parent zone. We repeat same steps until we find the final answer we want, if any of these steps failed validation during the process, we output validation failed. 
+
+
+Acknowledgment: I watched the YouTube video to understand DNSSEC:
+https://www.youtube.com/watch?v=_8M_vuFcdZU
+
+Output samples
+I used three examples in this file: verisigninc.com, www.cnn.com, and www.dnssec-failed.org. 
+
+Three input tests I demonstrated in this file:
+1. python dnssec.py verisigninc.com A 
+2. python dnssec.py www.cnn.com A 
+3. python dnssec.py www.dnssec-failed.org A
+==================================================================================================================
+
+
+(Output)
+1
+Root KSK verification succeed.
+. DNSKEYs verify succeed
+com. DS is verified successfully
+Zone validation succeed.
+com. DNSKEYs verify succeed
+verisigninc.com. DS is verified successfully
+Zone validation succeed.
+verisigninc.com. DNSKEYs verify succeed
+QUESTION SECTION:
+verisigninc.com IN A
+ANSWER SECTION:
+verisigninc.com. 3600 IN A 72.13.63.55
+Query time: 768.090009689331 ms
+WHEN: Wed Sep 23 23:46:49 2020
+MSG SIZE rcvd: 907
+
+2
+Root KSK verification succeed.
+. DNSKEYs verify succeed
+com. DS is verified successfully
+Zone validation succeed.
+com. DNSKEYs verify succeed
+DNSSEC not supported
+
+
+3
+Root KSK verification succeed.
+. DNSKEYs verify succeed
+org. DS is verified successfully
+Zone validation succeed.
+org. DNSKEYs verify succeed
+DNSSec verification failed.
+
+
+
