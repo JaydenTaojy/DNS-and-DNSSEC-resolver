@@ -1,0 +1,52 @@
+How to executing mydig:
+
+Type "python mydig.py <domain> <dnsType>" through command line,
+in which '<domain>' is the domain you wish to resolve and '<dnsType>'
+is the dns type you are requesting.
+
+
+Output of 'A' request:
+Input: Python mydig.py google.com A
+
+Output:
+QUESTION SECTION:
+google.com IN A
+ANSWER SECTION:
+google.com. 300 IN A 172.217.11.46
+Query time: 78.63616943359375 ms
+WHEN: Thu Sep 24 01:07:46 2020
+MSG SIZE rcvd: 143
+
+
+Output of 'NS' request:
+Input: Python mydig.py google.com NS
+
+Output:
+QUESTION SECTION:
+google.com IN NS
+ANSWER SECTION:
+google.com. 345600 IN NS ns4.google.com.
+google.com. 345600 IN NS ns3.google.com.
+google.com. 345600 IN NS ns2.google.com.
+google.com. 345600 IN NS ns1.google.com.
+Query time: 92.84615516662598 ms
+WHEN: Thu Sep 24 01:08:46 2020
+MSG SIZE rcvd: 648
+
+
+
+Outout of 'MX' request:
+Input: Python mydig.py google.com MX
+
+Output:
+QUESTION SECTION:
+google.com IN MX
+ANSWER SECTION:
+google.com. 600 IN MX 50 alt4.aspmx.l.google.com.
+google.com. 600 IN MX 20 alt1.aspmx.l.google.com.
+google.com. 600 IN MX 30 alt2.aspmx.l.google.com.
+google.com. 600 IN MX 40 alt3.aspmx.l.google.com.
+google.com. 600 IN MX 10 aspmx.l.google.com.
+Query time: 92.59796142578125 ms
+WHEN: Thu Sep 24 01:09:20 2020
+MSG SIZE rcvd: 885
