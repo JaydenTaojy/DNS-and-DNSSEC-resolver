@@ -1,6 +1,8 @@
 # DNS-and-DNSSEC-resolver
 # DNS resolver by python3
 
+See the assignment file for details about the projtect.
+
 How to run:
 
 The code has been tested under python 3.7.1, not sure about other python versions.
